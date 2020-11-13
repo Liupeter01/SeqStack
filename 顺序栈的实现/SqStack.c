@@ -75,4 +75,3 @@ BOOL Pop_stack(SqStack* S, ElemType* x)           //³öÕ»
 					return FALSE;
 		  }
 }
-
