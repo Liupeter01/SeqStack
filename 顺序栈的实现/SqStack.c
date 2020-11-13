@@ -38,6 +38,21 @@ ElemType GetTop(SqStack S)             //获取顶部元素
 		  }
 }
 
+BOOL ExtendStackSize(SqStack* S)//栈空间的扩展
+{
+		  S->base = (ElemType*)realloc(S->base, sizeof(ElemType) * (S->stacksize + STACK_INC_SIZE));		//重新分配
+		  assert(S->base != NULL);
+		  if (S->base == NULL)
+		  {
+					return FALSE;
+		  }
+		  else
+		  {
+					S->stacksize += STACK_INC_SIZE;
+					return TRUE;
+		  }
+}
+
 BOOL IsFull(SqStack* S)     //是否已满
 {
 		  return S->top >= S->stacksize;
@@ -50,28 +65,28 @@ BOOL IsEmpty(SqStack* S)     //是否为空
 
 BOOL Push_stack(SqStack* S, ElemType x)        //入栈
 {
-		  if (!IsFull(S))	  //没有满
-		  {
-					S->base[S->top++] = x;
-					return TRUE;
-		  }
-		  else
+		  if (IsFull(S) && ExtendStackSize(S))	  ////若是空间不够可以自动扩容
 		  {
 					printf("栈空间已满，%d不可以入栈\n", x);
 					return FALSE;
+		  }
+		  else
+		  {
+					S->base[S->top++] = x;
+					return TRUE;
 		  }
 }
 
 BOOL Pop_stack(SqStack* S, ElemType* x)           //出栈
 {
-		  if (!IsEmpty(S))
-		  {
-					*x = S->base[--(S->top)];
-					return TRUE;
-		  }
-		  else
+		  if (IsEmpty(S) && ExtendStackSize(S))				//若是空间不够可以自动扩容
 		  {
 					printf("栈空间已空，不可以出栈\n");
 					return FALSE;
+		  }
+		  else
+		  {
+					*x = S->base[--(S->top)];
+					return TRUE;
 		  }
 }
